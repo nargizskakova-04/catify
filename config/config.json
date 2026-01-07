@@ -1,0 +1,9 @@
+{
+    "app": {
+        "port" : 8080
+    },
+    "repository": {
+        "db_port": 5432,
+        "db_name": "catify"
+    }
+}
