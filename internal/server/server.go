@@ -2,9 +2,11 @@ package server
 
 import (
 	"catify/internal/config"
+	"context"
 	"database/sql"
 	"net/http"
 	"os"
+	"time"
 
 	v1 "catify/internal/delivery/http/v1"
 	postgres "catify/internal/repository/postgres"
@@ -50,4 +52,42 @@ func (a *App) setHandler() error {
 	v1.SetHandler(a.router, a.logger)
 
 	return nil
+}
+
+func (a *App) Run(ctx context.Context) {
+	var err error
+	defer a.closeConnections()
+
+	srv := &http.Server{
+		Addr:    a.cfg.Server.Address,
+		Handler: a.router,
+	}
+
+	ctx, cancel := context.WithCancel(ctx)
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			a.logger.Error().Err(err).Msg("Server failed")
+			cancel()
+			return
+		}
+	}()
+
+	a.logger.Info().Msgf("Server is running on %s", a.cfg.App.Port)
+	<-ctx.Done()
+	a.logger.Info().Msg("Shutting down server...")
+
+	ctx, cancel = context.WithTimeout(context.Background(), time.Minute*3)
+	defer cancel()
+
+	if err = srv.Shutdown(ctx); err != nil {
+		a.logger.Error().Err(err).Msg("Server forced to shutdown")
+	}
+
+	a.logger.Info().Msg("Server exited properly")
+}
+
+func (a *App) closeConnections() {
+	if err := a.db.Close(); err != nil {
+		a.logger.Error().Err(err).Msg("failed to close db")
+	}
 }
