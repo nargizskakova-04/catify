@@ -4,6 +4,7 @@ import (
 	"catify/internal/config"
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -59,7 +60,7 @@ func (a *App) Run(ctx context.Context) {
 	defer a.closeConnections()
 
 	srv := &http.Server{
-		Addr:    a.cfg.Server.Address,
+		Addr:    fmt.Sprintf("localhost:%d", a.cfg.App.Port),
 		Handler: a.router,
 	}
 
