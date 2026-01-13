@@ -40,7 +40,7 @@ func (a *App) Initialize() error {
 
 func (a *App) setHandler() error {
 
-	dbConn, err := postgres.NewDbConnInstance(&a.cfg.Repository)
+	dbConn, err := postgres.NewDbConnInstance(a.cfg.Repository)
 	if err != nil {
 		a.logger.Error().Err(err).Msg("Connection to database failed")
 		return err
@@ -50,7 +50,7 @@ func (a *App) setHandler() error {
 
 	a.router.Handle("GET /swagger/", httpSwagger.WrapHandler)
 
-	v1.SetHandler(a.router, a.logger)
+	v1.SetHandler(a.logger, a.router)
 
 	return nil
 }
