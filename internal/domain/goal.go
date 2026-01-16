@@ -1,4 +1,4 @@
-package models
+package domain
 
 type Goal struct {
 	ID          int64   `db:"id"`
