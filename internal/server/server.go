@@ -17,10 +17,11 @@ import (
 )
 
 type App struct {
-	cfg    *config.Config
-	router *http.ServeMux
-	logger zerolog.Logger
-	db     *sql.DB
+	cfg         *config.Config
+	router      *http.ServeMux
+	logger      zerolog.Logger
+	userService v1.UserService
+	db          *sql.DB
 }
 
 func NewApp(cfg *config.Config) *App {
@@ -48,9 +49,13 @@ func (a *App) setHandler() error {
 	a.db = dbConn
 	a.logger.Info().Msg("Database connected successfully")
 
+	userRepo := postgres.NewUserRepository(a.db)
+
+	a.userService = service.NewUserService(userRepo, a.logger)
+
 	a.router.Handle("GET /swagger/", httpSwagger.WrapHandler)
 
-	v1.SetHandler(a.logger, a.router)
+	v1.SetHandler(a.logger, a.userService, a.router)
 
 	return nil
 }
