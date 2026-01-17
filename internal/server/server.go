@@ -11,6 +11,7 @@ import (
 
 	v1 "catify/internal/delivery/http/v1"
 	postgres "catify/internal/repository/postgres"
+	service "catify/internal/service"
 
 	"github.com/rs/zerolog"
 	httpSwagger "github.com/swaggo/http-swagger"

@@ -11,14 +11,19 @@ type Handler struct {
 	userService UserService
 }
 
-func NewHandler(logger zerolog.Logger, userService UserService) *Handler {
+func NewHandler(
+	logger zerolog.Logger,
+	userService UserService) *Handler {
 	return &Handler{
 		logger:      logger,
 		userService: userService,
 	}
 }
 
-func SetHandler(logger zerolog.Logger, mux *http.ServeMux) {
-	handler := NewHandler(logger)
+func SetHandler(
+	logger zerolog.Logger,
+	userService UserService,
+	mux *http.ServeMux) {
+	handler := NewHandler(logger, userService)
 	setRoutes(handler, mux)
 }
