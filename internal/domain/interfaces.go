@@ -7,3 +7,7 @@ type UserRepository interface {
 	GetByID(ctx context.Context, id int64) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 }
+
+type GoalRepository interface {
+	Create(ctx context.Context, goal *Goal) (int64, error)
+}
