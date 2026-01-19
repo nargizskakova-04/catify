@@ -10,6 +10,7 @@ import (
 
 type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) (int64, error)
+	GetUserByID(ctx context.Context, id int64) (*domain.User, error)
 }
 
 type UserService struct {
@@ -36,5 +37,14 @@ func (s *UserService) CreateUser(ctx context.Context, req dto.CreateUserRequest)
 	}
 
 	user.ID = id
+	return user, nil
+}
+
+func (s *UserService) GetUserByID(ctx context.Context, id int64) (*domain.User, error) {
+	user, err := s.repo.GetUserByID(ctx, id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to get user from repository")
+		return nil, err
+	}
 	return user, nil
 }
