@@ -9,21 +9,25 @@ import (
 type Handler struct {
 	logger      zerolog.Logger
 	userService UserService
+	goalService GoalService
 }
 
 func NewHandler(
 	logger zerolog.Logger,
-	userService UserService) *Handler {
+	userService UserService,
+	goalService GoalService) *Handler {
 	return &Handler{
 		logger:      logger,
 		userService: userService,
+		goalService: goalService,
 	}
 }
 
 func SetHandler(
 	logger zerolog.Logger,
 	userService UserService,
+	goalService GoalService,
 	mux *http.ServeMux) {
-	handler := NewHandler(logger, userService)
+	handler := NewHandler(logger, userService, goalService)
 	setRoutes(handler, mux)
 }

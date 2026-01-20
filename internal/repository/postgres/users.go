@@ -24,7 +24,7 @@ func (r *UserRepository) Create(ctx context.Context, user *domain.User) (int64, 
 	return userID, nil
 }
 
-func (r *UserRepository) GetByID(ctx context.Context, id int64) (*domain.User, error) {
+func (r *UserRepository) GetUserByID(ctx context.Context, id int64) (*domain.User, error) {
 	var user domain.User
 	query := `SELECT id, username, email, password FROM users WHERE id = $1`
 	err := r.db.QueryRowContext(ctx, query, id).Scan(&user.ID, &user.Username, &user.Email, &user.Password)

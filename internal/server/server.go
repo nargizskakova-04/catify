@@ -22,6 +22,7 @@ type App struct {
 	router      *http.ServeMux
 	logger      zerolog.Logger
 	userService v1.UserService
+	goalService v1.GoalService
 	db          *sql.DB
 }
 
@@ -51,12 +52,14 @@ func (a *App) setHandler() error {
 	a.logger.Info().Msg("Database connected successfully")
 
 	userRepo := postgres.NewUserRepository(a.db)
+	goalRepo := postgres.NewGoalRepository(a.db)
 
 	a.userService = service.NewUserService(userRepo, a.logger)
+	a.goalService = service.NewGoalService(goalRepo, a.logger)
 
 	a.router.Handle("GET /swagger/", httpSwagger.WrapHandler)
 
-	v1.SetHandler(a.logger, a.userService, a.router)
+	v1.SetHandler(a.logger, a.userService, a.goalService, a.router)
 
 	return nil
 }
