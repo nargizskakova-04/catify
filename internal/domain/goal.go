@@ -8,3 +8,11 @@ type Goal struct {
 	Progress    float64 `db:"progress"`
 	UserID      int64   `db:"user_id"`
 }
+
+type CreateGoalInput struct {
+	Title       string
+	Description string
+	TargetDate  string
+	Progress    float64
+	UserID      int64
+}
